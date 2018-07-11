@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.dao.product.ProductDao">
+
+    <select id="findShopProduct" resultType="com.project.domain.product.ProductCategoryMiddle">
+        select p.id product_id,c.id category_id,c.category_name,p.product_image,p.product_name,p.price,p.spec
+        from product_category_middle cm,product p,product_category c
+        where cm.category_id=c.id and cm.product_id=p.id and p.status = 1 and c.status=1 and p.user_id_create = #{userId}  and cm.user_id = #{userId}
+    </select>
+
+
+    <select id="findProductSpec" resultType="com.project.domain.product.ProductCategoryMiddle">
+      select spec,product_image,remark,product_name from product where id = #{productId}
+    </select>
+
+    <select id="list" resultType="com.project.domain.product.ProductDO">
+      select * from product where user_id_create = #{userId} and status = 1
+    </select>
+</mapper>

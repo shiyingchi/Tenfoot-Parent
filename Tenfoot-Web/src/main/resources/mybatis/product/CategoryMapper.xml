@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.dao.product.CategoryDao">
+
+    <select id="get" resultType="com.project.domain.product.CategoryDO">
+		select `id`,`category_name`,`status`,`gmt_create` from product_category where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.project.domain.product.CategoryDO">
+        select `id`,`category_name`,`status`,`gmt_create` from product_category
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="categoryName != null and categoryName != ''">and category_name like '%${categoryName}%'</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="userIdCreate != null and userIdCreate != ''">and user_id_create = #{userIdCreate}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="categoryList" resultType="com.project.domain.product.CategoryDO">
+        select `id`,`category_name` from product_category where status=1
+        <if test="userIdCreate != null and userIdCreate != ''"> and user_id_create = #{userIdCreate}</if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from product_category
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="categoryName != null and categoryName != ''">and category_name = #{categoryName}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.project.domain.product.CategoryDO">
+		insert into product_category
+		(
+			`id`, 
+			`category_name`, 
+			`status`, 
+			`gmt_create`,
+			`user_id_create`
+		)
+		values
+		(
+			#{id}, 
+			#{categoryName}, 
+			#{status}, 
+			#{gmtCreate},
+			#{userIdCreate}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.project.domain.product.CategoryDO">
+        update product_category
+        <set>
+            <if test="categoryName != null">`category_name` = #{categoryName},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="gmtCreate != null">`gmt_create` = #{gmtCreate}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from product_category where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from product_category where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

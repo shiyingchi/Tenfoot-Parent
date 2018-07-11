@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">商品图片：</label>
+                            <div class="col-sm-8">
+                                <img id="Image" th:src="@{/img/imgadd.png}"
+                                     style="height: 70px;cursor: pointer;"/>
+                                <input type="hidden" id="productImage" name="productImage">
+                                <input type="hidden" id="spec" name="spec">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">商品名称：</label>
+                            <div class="col-sm-8">
+                                <input id="productName" name="productName" class="form-control" type="text" placeholder="商品名称">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">商品分类：</label>
+                            <div class="col-sm-8">
+
+                                <label class="checkbox-inline" th:each="category : ${categoryList}"  ><input name="productCategoryMiddle" type="checkbox" th:value="${category.id}" th:text="${category.categoryName}"></label>
+
+                                <!--<select class="form-control" id="categoryId" name="categoryId">-->
+                                    <!--<option value="">请选择</option>-->
+                                    <!--<option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.categoryName}" ></option>-->
+                                <!--</select>-->
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">价格：</label>
+                            <div class="col-sm-8">
+                                <input id="price" name="price" class="form-control" type="text" placeholder="价格 例如:0.00">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">详情：</label>
+                            <div class="col-sm-8">
+                                <input name="remark" class="form-control" type="text" placeholder="详情">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">规格：</label>
+                            <div class="col-sm-8">
+                                <button class="btn btn-info" id="add_spec" type="button">+增加规格</button>
+                            </div>
+                        </div>
+
+
+                        <span id="selectedData">
+                            <div class="form-group" >
+                                <label class="col-sm-3 control-label"></label>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label checkbox-inline"><input type="checkbox">加料：</label>
+                                        <div class="col-sm-9">
+                                            <label class="checkbox-inline"><input type="checkbox" value="0">常规</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-7 col-sm-offset-2" style="overflow: hidden;">
+                                        <input class="form-control" type="text" style="width: 70px;float: left" placeholder="名称">
+                                        <input class="form-control" type="number" style="width: 70px;float: left" value="0" placeholder="价格">
+                                        <button class="btn btn-success" type="button" th:onclick="'addAttribute(this)'" style="float: left">增加</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </span>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">状态:</label>
+                            <div class="col-sm-8">
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="1" checked="true"/> 上架
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="0"/> 下架
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" th:src="@{/js/jquery.json-2.3.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.json-2.3.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/appjs/product/add.js}">
+</script>
+</body>
+</html>

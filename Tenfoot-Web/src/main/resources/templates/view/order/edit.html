@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input id="id" name="id" th:value="${order.id}" type="hidden">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">订单号码：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.id}" ></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">微信昵称：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.nickName}" ></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">用户名称：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.userName}" ></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">用户手机号：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.phone}" ></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">用户收货地址：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.address}" ></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">取餐方式：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:if="${order.state == '0'}" >外卖</label>
+                                <label class="control-label" th:if="${order.state == '1'}" >到店</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">下单时间：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.createTime}" ></label>
+                            </div>
+                        </div>
+                        <div class="form-group" th:if="${order.distributionOrderTime != null}">
+                            <label class="col-sm-3 control-label">配送时间：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.distributionOrderTime}" ></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">支付金额：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.payAmount}" ></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">订单状态：</label>
+                            <div class="col-sm-8">
+                                <div th:switch="${order.status}">
+                                    <label class="control-label" th:case="'0'" ><font color="red">待支付</font></label>
+                                    <label class="control-label" th:case="'1'" >已支付</label>
+                                    <label class="control-label" th:case="'2'" >失败</label>
+                                    <label class="control-label" th:case="'3'" >已配送</label>
+                                    <label class="control-label" th:case="'4'" >已完成</label>
+                                    <label class="control-label" th:case="'6'" >申请退款</label>
+                                    <label class="control-label" th:case="'7'" >退款成功</label>
+                                    <label class="control-label" th:case="'8'" >退款失败</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" th:if="${order.status == '2'}">
+                            <label class="col-sm-3 control-label">失败原因：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.payDesc}" ></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" th:if="${order.payCreateTime != null}">
+                            <label class="col-sm-3 control-label">支付时间：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.payCreateTime}" ></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">用户备注：</label>
+                            <div class="col-sm-8">
+                                <label class="control-label" th:text="${order.remark}" ></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">订单商品：</label>
+                            <div class="col-sm-8">
+                                <table class="table table-hover table-striped" style="border: 1px solid #dddddd;">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: center; " >
+                                            <div class="th-inner ">商品名称</div>
+                                            <div class="fht-cell"></div>
+                                        </th>
+                                        <th style="text-align: center; " >
+                                            <div class="th-inner ">商品规格</div>
+                                            <div class="fht-cell"></div>
+                                        </th>
+                                        <th style="text-align: center; " >
+                                            <div class="th-inner ">商品数量</div>
+                                            <div class="fht-cell"></div>
+                                        </th>
+                                        <th style="text-align: center; " >
+                                            <div class="th-inner ">商品价格</div>
+                                            <div class="fht-cell"></div>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="list,iterStat : ${order.orderDetialDOList}" >
+                                        <td style="text-align: center; " th:text="${list.productName}"></td>
+                                        <td style="text-align: center; " th:text="${list.spec}"></td>
+                                        <td style="text-align: center; " th:text="${list.num}"></td>
+                                        <td style="text-align: center; " th:text="${list.price}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group" >
+                            <div class="col-sm-1 col-sm-offset-2" shiro:hasPermission="order:orderDistribution" th:if="${order.status == '1'}">
+                                <button type="button" class="btn btn-primary" id="orderDistribution">订单配送</button>
+                            </div>
+                            <div class="col-sm-1 col-sm-offset-3" shiro:hasPermission="order:orderComplete" th:if="${order.status == '3'}">
+                                <button type="button" class="btn btn-primary" id="orderComplete">订单完成</button>
+                            </div>
+                            <div class="col-sm-1 col-sm-offset-3" shiro:hasPermission="order:orderRefund" th:if="${order.status != '7' && order.status != '0'}">
+                                <button type="button" class="btn btn-primary" id="orderRefund">申请退款</button>
+                            </div>
+                            <div class="col-sm-1 col-sm-offset-3">
+                                <button type="button" class="btn btn-primary" id="back">返回</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" th:src="@{/js/appjs/order/edit.js}">
+</script>
+</body>
+</html>

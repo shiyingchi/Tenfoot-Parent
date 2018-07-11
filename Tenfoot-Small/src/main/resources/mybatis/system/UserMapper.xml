@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.dao.system.UserDao">
+
+
+	<select id="get" resultType="com.project.domain.system.UserDO">
+		select `name`,`head_img`,concat(`province`,`city`,`region`,`address`) as address,`phone`,`start_time`,`end_time`,`business_hours`
+		from sys_user where user_id = #{value}
+	</select>
+
+	<select id="smallList" resultType="com.project.domain.system.UserDO">
+		SELECT user_id,name,head_img,start_time,end_time,phone,CONCAT(province,city,region,address) address,
+				round(6378.138*2*asin(sqrt(pow(sin( (lat*pi()/180-(#{lat})*pi()/180)/2),2)+cos(lat*pi()/180)*cos(#{lat}
+				*pi()/180)* pow(sin((lng*pi()/180-(#{lng})*pi()/180)/2),2)))*1000) as distance
+		from sys_user where dept_id=23 and status=1 and state=1 order by distance ASC
+	</select>
+
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.dao.user.TuserDao">
+
+	<select id="get" resultType="com.project.domain.user.TuserDO">
+		select `open_id`,`nick_name`,`phone`,`head_img`,`gender`,`city`,`province`,`country`,`create_time`,`login_time`,`user_id` from t_user where open_id = #{value}
+	</select>
+
+	<insert id="save" parameterType="com.project.domain.user.TuserDO">
+		insert into t_user
+		(
+			`open_id`, 
+			`nick_name`, 
+			`phone`, 
+			`head_img`, 
+			`gender`, 
+			`city`, 
+			`province`, 
+			`country`, 
+			`create_time`, 
+			`login_time`, 
+			`user_id`
+		)
+		values
+		(
+			#{openId}, 
+			#{nickName}, 
+			#{phone}, 
+			#{headImg}, 
+			#{gender}, 
+			#{city}, 
+			#{province}, 
+			#{country}, 
+			#{createTime}, 
+			#{loginTime}, 
+			#{userId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.project.domain.user.TuserDO">
+		update t_user 
+		<set>
+			<if test="nickName != null">`nick_name` = #{nickName}, </if>
+			<if test="phone != null">`phone` = #{phone}, </if>
+			<if test="headImg != null">`head_img` = #{headImg}, </if>
+			<if test="gender != null">`gender` = #{gender}, </if>
+			<if test="city != null">`city` = #{city}, </if>
+			<if test="province != null">`province` = #{province}, </if>
+			<if test="country != null">`country` = #{country}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="loginTime != null">`login_time` = #{loginTime}, </if>
+			<if test="userId != null">`user_id` = #{userId}</if>
+		</set>
+		where open_id = #{openId}
+	</update>
+	
+</mapper>

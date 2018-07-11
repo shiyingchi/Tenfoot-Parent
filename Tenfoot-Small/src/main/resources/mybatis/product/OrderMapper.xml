@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.dao.product.OrderDao">
+
+    <select id="get0" resultType="com.project.domain.product.OrderDO">
+        select o.*,u.nick_name,a.phone,a.address,a.user_name,s.phone as telephone,a.sex
+         from t_order o,t_user u,t_address a,sys_user s
+        where o.open_id=u.open_id and o.address_id=a.id and o.user_id=s.user_id and o.id = #{value}
+	</select>
+
+    <select id="get1" resultType="com.project.domain.product.OrderDO">
+        select o.*,u.nick_name,s.phone as telephone
+        from t_order o,t_user u,sys_user s
+        where o.open_id=u.open_id and o.user_id=s.user_id and o.id = #{value}
+    </select>
+
+
+
+    <select id="getOrderProductList" resultType="com.project.domain.product.OrderDetailsDO">
+		select od.spec,p.product_name,od.num,od.price,p.spec product_spec from t_order o,t_order_details od,product p
+		where o.id=od.order_id and od.product_id = p.id and o.id = #{value}
+
+	</select>
+
+    <select id="list" resultType="com.project.domain.product.OrderDO">
+        select *,(select p.product_image from t_order_details od,product p where o.id=od.order_id and od.product_id=p.id
+        LIMIT 0,1) product_image
+        from t_order o where o.type = 0
+
+        <if test="id != null and id != ''">and o.id = #{id}</if>
+        <if test="addressId != null and addressId != ''">and o.address_id = #{addressId}</if>
+        <if test="userId != null and userId != ''">and o.user_id = #{userId}</if>
+        <if test="createTime != null and createTime != ''">and o.create_time = #{createTime}</if>
+        <if test="openId != null and openId != ''">and o.open_id = #{openId}</if>
+        <if test="payTradeNo != null and payTradeNo != ''">and o.pay_trade_no = #{payTradeNo}</if>
+        <if test="payAmount != null and payAmount != ''">and o.pay_amount = #{payAmount}</if>
+        <if test="payDesc != null and payDesc != ''">and o.pay_desc = #{payDesc}</if>
+        <if test="payCreateTime != null and payCreateTime != ''">and o.pay_create_time = #{payCreateTime}</if>
+        <if test="status != null and status != ''">and o.status = #{status}</if>
+        <if test="distributionTime != null and distributionTime != ''">and o.distribution_time =
+            #{distributionTime}
+        </if>
+        <if test="orderCompleteTime != null and orderCompleteTime != ''">and o.order_complete_time =
+            #{orderCompleteTime}
+        </if>
+        <if test="distributionOrderTime != null and distributionOrderTime != ''">and o.distribution_order_time =
+            #{distributionOrderTime}
+        </if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by o.id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from t_order
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="addressId != null and addressId != ''">and address_id = #{addressId}</if>
+            <if test="userId != null and userId != ''">and user_id = #{userId}</if>
+            <if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+            <if test="openId != null and openId != ''">and open_id = #{openId}</if>
+            <if test="payTradeNo != null and payTradeNo != ''">and pay_trade_no = #{payTradeNo}</if>
+            <if test="payAmount != null and payAmount != ''">and pay_amount = #{payAmount}</if>
+            <if test="payDesc != null and payDesc != ''">and pay_desc = #{payDesc}</if>
+            <if test="payCreateTime != null and payCreateTime != ''">and pay_create_time = #{payCreateTime}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="distributionTime != null and distributionTime != ''">and distribution_time = #{distributionTime}
+            </if>
+            <if test="orderCompleteTime != null and orderCompleteTime != ''">and order_complete_time =
+                #{orderCompleteTime}
+            </if>
+            <if test="distributionOrderTime != null and distributionOrderTime != ''">and distribution_order_time =
+                #{distributionOrderTime}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.project.domain.product.OrderDO">
+		insert into t_order
+		(
+			`id`, 
+			`address_id`, 
+			`user_id`, 
+			`create_time`, 
+			`open_id`, 
+			`pay_trade_no`, 
+			`pay_amount`, 
+			`pay_desc`, 
+			`pay_create_time`, 
+			`status`, 
+			`distribution_time`, 
+			`order_complete_time`, 
+			`remark`,
+			`state`,
+			`num`,
+			`distribution_order_time`
+		)
+		values
+		(
+			#{id}, 
+			#{addressId}, 
+			#{userId}, 
+			#{createTime}, 
+			#{openId}, 
+			#{payTradeNo}, 
+			#{payAmount}, 
+			#{payDesc}, 
+			#{payCreateTime}, 
+			#{status}, 
+			#{distributionTime}, 
+			#{orderCompleteTime}, 
+			#{remark},
+			#{state},
+			#{num},
+			#{distributionOrderTime}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.project.domain.product.OrderDO">
+        update t_order
+        <set>
+            <if test="addressId != null">`address_id` = #{addressId},</if>
+            <if test="userId != null">`user_id` = #{userId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="openId != null">`open_id` = #{openId},</if>
+            <if test="payTradeNo != null">`pay_trade_no` = #{payTradeNo},</if>
+            <if test="payAmount != null">`pay_amount` = #{payAmount},</if>
+            <if test="payDesc != null">`pay_desc` = #{payDesc},</if>
+            <if test="payCreateTime != null">`pay_create_time` = #{payCreateTime},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="state != null">`state` = #{state},</if>
+            <if test="distributionTime != null">`distribution_time` = #{distributionTime},</if>
+            <if test="orderCompleteTime != null">`order_complete_time` = #{orderCompleteTime},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="distributionOrderTime != null">`distribution_order_time` = #{distributionOrderTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from t_order where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from t_order where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <insert id="batchSave">
+        INSERT INTO t_order_details(id, order_id,product_id,spec,price,num) values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (#{item.id},#{item.orderId},#{item.productId},#{item.spec},#{item.price},#{item.num})
+        </foreach>
+    </insert>
+
+</mapper>

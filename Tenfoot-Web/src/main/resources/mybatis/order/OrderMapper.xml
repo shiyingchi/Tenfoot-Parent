@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.dao.order.OrderDao">
+
+    <select id="get" resultType="com.project.domain.order.OrderDO">
+        select o.*,u.nick_name,a.phone,a.address,a.user_name
+         from t_order o,t_user u,t_address a
+        where o.open_id=u.open_id and o.address_id=a.id and o.id = #{value}
+	</select>
+
+    <select id="list" resultType="com.project.domain.order.OrderDO">
+        select o.id,o.create_time,a.user_name,a.phone,o.status,o.state,o.pay_amount,o.distribution_time,o.pay_create_time
+        from t_order o,t_user u,t_address a
+        where o.open_id=u.open_id and o.address_id=a.id
+
+        <if test="userId != null and userId != ''">and o.user_id = #{userId}</if>
+
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*)
+        from t_order o,t_user u,t_address a
+        where o.open_id=u.open_id and o.address_id=a.id
+        <if test="id != null and id != ''">and id = #{id}</if>
+        <if test="addressId != null and addressId != ''">and address_id = #{addressId}</if>
+        <if test="userId != null and userId != ''">and o.user_id = #{userId}</if>
+        <if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+        <if test="openId != null and openId != ''">and open_id = #{openId}</if>
+        <if test="payTradeNo != null and payTradeNo != ''">and pay_trade_no = #{payTradeNo}</if>
+        <if test="payAmount != null and payAmount != ''">and pay_amount = #{payAmount}</if>
+        <if test="payDesc != null and payDesc != ''">and pay_desc = #{payDesc}</if>
+        <if test="payCreateTime != null and payCreateTime != ''">and pay_create_time = #{payCreateTime}</if>
+        <if test="status != null and status != ''">and status = #{status}</if>
+        <if test="distributionTime != null and distributionTime != ''">and distribution_time = #{distributionTime}
+        </if>
+        <if test="orderCompleteTime != null and orderCompleteTime != ''">and order_complete_time =
+            #{orderCompleteTime}
+        </if>
+        <if test="distributionOrderTime != null and distributionOrderTime != ''">and distribution_order_time =
+            #{distributionOrderTime}
+        </if>
+        <if test="state != null and state != ''">and state = #{state}</if>
+        <if test="remark != null and remark != ''">and remark = #{remark}</if>
+    </select>
+
+    <update id="update" parameterType="com.project.domain.order.OrderDO">
+        update t_order
+        <set>
+            <if test="addressId != null">`address_id` = #{addressId},</if>
+            <if test="userId != null">`user_id` = #{userId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="openId != null">`open_id` = #{openId},</if>
+            <if test="payTradeNo != null">`pay_trade_no` = #{payTradeNo},</if>
+            <if test="payAmount != null">`pay_amount` = #{payAmount},</if>
+            <if test="payDesc != null">`pay_desc` = #{payDesc},</if>
+            <if test="payCreateTime != null">`pay_create_time` = #{payCreateTime},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="distributionTime != null">`distribution_time` = #{distributionTime},</if>
+            <if test="orderCompleteTime != null">`order_complete_time` = #{orderCompleteTime},</if>
+            <if test="distributionOrderTime != null">`distribution_order_time` = #{distributionOrderTime},</if>
+            <if test="state != null">`state` = #{state},</if>
+            <if test="refundTradeNo != null">`refund_trade_no` = #{refundTradeNo},</if>
+            <if test="refundDesc != null">`refund_desc` = #{refundDesc},</if>
+            <if test="refundCreateTime != null">`refund_create_time` = #{refundCreateTime},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="remark != null">`remark` = #{remark}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from t_order where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from t_order where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="getOrderProductList" resultType="com.project.domain.order.OrderDetialDO">
+        select p.product_name,od.spec,od.num,od.price,p.spec product_spec from t_order o,t_order_details od,product p
+        where o.id=od.order_id and od.product_id = p.id and o.id = #{value}
+
+    </select>
+
+    <delete id="removeDetail">
+        delete from t_order_details where order_id = #{value}
+    </delete>
+
+    <delete id="batchRemoveDetail">
+        delete from t_order_details where order_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="findOrderList" resultType="com.project.domain.order.OrderDO">
+        select * from t_order where status = 3
+    </select>
+
+    <delete id="updateOrder">
+        UPDATE t_order set status = 4  where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

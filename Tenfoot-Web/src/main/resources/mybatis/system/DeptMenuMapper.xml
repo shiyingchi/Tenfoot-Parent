@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.dao.system.DeptMenuDao">
+
+	<delete id="removeByDeptId">
+		DELETE FROM sys_dept_menu WHERE dept_id=#{deptId}
+	</delete>
+
+	<insert id="batchSave">
+		INSERT INTO sys_dept_menu(dept_id, menu_id) values
+		<foreach item="item" index="index" collection="list"
+			separator=",">
+			(#{item.deptId},#{item.menuId})
+		</foreach>
+	</insert>
+
+	<select id="listMenuIdByDeptId" resultType="long">
+		select menu_id from sys_dept_menu
+		<where>dept_id = #{deptId}</where>
+	</select>
+</mapper>

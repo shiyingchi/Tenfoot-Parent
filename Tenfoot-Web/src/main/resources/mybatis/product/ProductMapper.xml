@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.dao.product.ProductDao">
+
+    <select id="get" resultType="com.project.domain.product.ProductDO">
+		select `id`,`product_name`,`product_image`,`price`,`spec`,`status`,`gmt_create`,`gmt_modified`,`remark` from product where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.project.domain.product.ProductDO">
+        select `id`,`product_name`,`spec`,`price`,`remark`,`product_image`,`status`,`gmt_create`,`gmt_modified` from product
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="productName != null and productName != ''">and product_name = #{productName}</if>
+            <if test="productImage != null and productImage != ''">and product_image = #{productImage}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModified != null and gmtModified != ''">and gmt_modified = #{gmtModified}</if>
+            <if test="userIdCreate != null and userIdCreate != ''">and user_id_create = #{userIdCreate}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from product
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="productName != null and productName != ''">and product_name = #{productName}</if>
+            <if test="productImage != null and productImage != ''">and product_image = #{productImage}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModified != null and gmtModified != ''">and gmt_modified = #{gmtModified}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.project.domain.product.ProductDO">
+		insert into product
+		(
+			`id`, 
+			`product_name`,
+			`product_image`,
+			`price`,
+			`spec`,
+			`status`,
+			`gmt_create`, 
+			`gmt_modified`,
+			`user_id_create`,
+			`remark`
+		)
+		values
+		(
+			#{id}, 
+			#{productName},
+			#{productImage},
+			#{price},
+			#{spec},
+			#{status},
+			#{gmtCreate}, 
+			#{gmtModified},
+			#{userIdCreate},
+			#{remark}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.project.domain.product.ProductDO">
+        update product
+        <set>
+            <if test="productName != null">`product_name` = #{productName},</if>
+            <if test="productImage != null">`product_image` = #{productImage},</if>
+            <if test="price != null">`price` = #{price},</if>
+            <if test="spec != null">`spec` = #{spec},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="gmtCreate != null">`gmt_create` = #{gmtCreate},</if>
+            <if test="gmtModified != null">`gmt_modified` = #{gmtModified},</if>
+            <if test="remark != null">`remark` = #{remark}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from product where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from product where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="batchSaveProductCategory">
+        INSERT INTO product_category_middle(id,product_id,category_id, user_id) values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (#{item.id},#{item.productId},#{item.categoryId},#{item.userId})
+        </foreach>
+    </insert>
+
+    <select id="getProductCategory" resultType="String">
+        select `category_id` from product_category_middle where product_id = #{productId} and user_id = #{userId}
+    </select>
+
+
+    <delete id="batchRemoveProductCategory">
+        delete from product_category_middle where product_id = #{productId} and user_id = #{userId}
+    </delete>
+
+    <select id="findShopProduct" resultType="com.project.domain.product.ProductCategoryMiddle">
+        select p.id product_id,c.id category_id,c.category_name,p.product_image,p.product_name,p.price,p.spec
+        from product_category_middle cm,product p,product_category c
+        where cm.category_id=c.id and cm.product_id=p.id and p.status = 1 and c.status=1 and p.user_id_create = #{userId}
+    </select>
+
+    <select id="findProductCategoryList" resultType="com.project.domain.product.ProductCategory">
+        select * from product_category_middle where user_id = #{userId}
+    </select>
+
+
+    <insert id="categorySave" parameterType="com.project.domain.product.ProductCategory">
+        insert into product_category_middle
+        (
+        `id`,
+        `product_id`,
+        `category_id`,
+        `user_id`
+        )
+        values
+        (
+        #{id},
+        #{productId},
+        #{categoryId},
+        #{userId}
+        )
+    </insert>
+
+
+
+
+
+</mapper>
