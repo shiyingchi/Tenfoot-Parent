@@ -9,6 +9,7 @@ import com.project.domain.system.DeptDO;
 import com.project.domain.system.UserDO;
 import com.project.domain.system.UserRoleDO;
 import com.project.server.system.UserService;
+import com.project.utils.Constant;
 import com.project.utils.ShiroUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import java.util.*;
 @Service
 //@CacheConfig(cacheNames = "UserServiceImpl")
 public class UserServiceImpl implements UserService {
+	public static final String ROLE_ALL_KEY = "\"role_all\"";
 	@Autowired
 	UserDao userMapper;
 	@Autowired
@@ -73,12 +75,13 @@ public class UserServiceImpl implements UserService {
 		return count;
 	}
 
+	@CacheEvict(value = Constant.CACHE_NAME, key = ROLE_ALL_KEY)
 	@Override
 	public int update(UserDO user) {
 		int r = userMapper.update(user);
 		Long userId = user.getUserId();
 		List<Long> roles = user.getroleIds();
-		if(roles != null){
+		if(roles.size() > 0){
 			userRoleMapper.removeByUserId(userId);
 			List<UserRoleDO> list = new ArrayList<>();
 			for (Long roleId : roles) {
